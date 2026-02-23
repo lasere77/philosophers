@@ -6,23 +6,32 @@
 /*   By: mcolin <mcolin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/07 11:37:36 by mcolin            #+#    #+#             */
-/*   Updated: 2026/02/23 16:15:20 by mcolin           ###   ########.fr       */
+/*   Updated: 2026/02/23 17:56:50 by mcolin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 #include "philo_routines.h"
 
-#include <stdbool.h>
-#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <pthread.h>
 
 #define MSG_FMT "please use the format:\n./philo number_of_philosophers \
 time_to_die time_to_eat time_to_sleep \
 optional: [number_of_times_each_philosopher_must_eat]\n"
-// flag valgrind: --toollgrind
+
+static void	destroy_mutex(t_philo *philos)
+{
+	size_t	i;
+
+	pthread_mutex_destroy(&philos[0].simulation_state->lock);
+	pthread_mutex_destroy(&philos[0].simulation_state->lock_stdout);
+	i = 0;
+	while (i != (size_t)philos[0].philo_const->nb_philo)
+		pthread_mutex_destroy(&philos[i++].left_fork.lock);
+}
 
 static void	create_threads(t_philo *philos)
 {
@@ -41,6 +50,7 @@ static void	create_threads(t_philo *philos)
 	i = 0;
 	while (i < (size_t)philos[0].philo_const->nb_philo)
 		pthread_join(philos[i++].thread_id, NULL);
+	destroy_mutex(philos);
 }
 
 int	main(int argc, char *argv[])

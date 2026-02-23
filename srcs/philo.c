@@ -6,7 +6,7 @@
 /*   By: mcolin <mcolin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 14:09:22 by mcolin            #+#    #+#             */
-/*   Updated: 2026/02/23 14:52:48 by mcolin           ###   ########.fr       */
+/*   Updated: 2026/02/23 18:09:48 by mcolin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,17 +63,17 @@ t_philo	*set_philos(t_simulation *simulation_state, t_philo_const *philo_const)
 	t_philo	*philos;
 	size_t	i;
 
-	simulation_state->state_simulation = true;
-	simulation_state->nb_philo_must_eat = 0;
-	gettimeofday(&simulation_state->start, NULL);
-	pthread_mutex_init(&simulation_state->lock, NULL);
-	pthread_mutex_init(&simulation_state->lock_stdout, NULL);
 	philos = ft_calloc(philo_const->nb_philo, sizeof(t_philo));
 	if (!philos)
 	{
 		free(philo_const);
 		return (NULL);
 	}
+	simulation_state->state_simulation = true;
+	simulation_state->nb_philo_must_eat = 0;
+	gettimeofday(&simulation_state->start, NULL);
+	pthread_mutex_init(&simulation_state->lock, NULL);
+	pthread_mutex_init(&simulation_state->lock_stdout, NULL);
 	i = 0;
 	while (i < (size_t)philo_const->nb_philo)
 	{
