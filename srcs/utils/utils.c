@@ -6,17 +6,12 @@
 /*   By: mcolin <mcolin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/07 15:55:44 by mcolin            #+#    #+#             */
-/*   Updated: 2026/01/09 14:58:37 by mcolin           ###   ########.fr       */
+/*   Updated: 2026/02/23 15:28:33 by mcolin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.h"
-#include <stddef.h>
-
-inline size_t	ft_abs(int nb)
-{
-	return (((nb < 0) * (nb * -1)) + ((nb > 0) * nb));
-}
+#include <sys/time.h>
 
 inline char	ft_isdigit(char c)
 {
@@ -44,7 +39,7 @@ void	*ft_calloc(size_t nmemb, size_t size)
 	return (res);
 }
 
-int	ft_atoi(const char *nptr)
+int	ft_atoi(const char *nptr, bool *have_overflow)
 {
 	size_t	i;
 	int		res;
@@ -60,6 +55,23 @@ int	ft_atoi(const char *nptr)
 	if (nptr[i] == '+' || nptr[i] == '-')
 		i++;
 	while (ft_isdigit(nptr[i]))
+	{
+		if (res > res * 10 + nptr[i] - '0')
+		{
+			if (have_overflow)
+				*have_overflow = true;
+			return (0);
+		}
 		res = res * 10 + nptr[i++] - '0';
+	}
 	return (res * cond);
+}
+
+size_t	get_time_stamps(struct timeval start)
+{
+	struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	return ((tv.tv_sec * 1000 + tv.tv_usec / 1000)
+		- (start.tv_sec * 1000 + start.tv_usec / 1000));
 }

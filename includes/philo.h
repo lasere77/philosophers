@@ -6,7 +6,7 @@
 /*   By: mcolin <mcolin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/07 17:00:00 by mcolin            #+#    #+#             */
-/*   Updated: 2026/01/09 14:58:47 by mcolin           ###   ########.fr       */
+/*   Updated: 2026/02/23 14:52:58 by mcolin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,16 @@
 
 # include <stdbool.h>
 # include <pthread.h>
+# include <stddef.h>
+# include <sys/time.h>
 
 typedef struct s_philo_const
 {
-	size_t	nb_philo;
 	size_t	time_to_die;
-	size_t	time_to_eat;
 	size_t	time_to_sleep;
-	size_t	nb_times_philosopher_must_eat;
+	int		time_to_eat;
+	int		nb_times_philosopher_must_eat;
+	int		nb_philo;
 }			t_philo_const;
 
 typedef struct s_fork
@@ -31,18 +33,28 @@ typedef struct s_fork
 	bool			available;
 }					t_fork;
 
+typedef struct s_simulation
+{
+	pthread_mutex_t	lock;
+	pthread_mutex_t	lock_stdout;
+	struct timeval	start;
+	bool			state_simulation;
+	int				nb_philo_must_eat;
+}					t_simulation;
+
 typedef struct s_philo
 {
 	t_fork			left_fork;
 	t_fork			*right_fork;
 	t_philo_const	*philo_const;
-	bool			*active_simulation;
-	size_t			thead_id;
-	size_t			nb_eat;
+	t_simulation	*simulation_state;
+	long			time_before_dying;
+	pthread_t		thread_id;
+	size_t			fake_thread_id;
+	int				nb_eat;
 }					t_philo;
 
-t_philo			*set_philos(char **argv);
-void			free_philos(t_philo *philos);
-t_philo_const	*set_philo_const(char *argv[]);
+t_philo	*set_philos(t_simulation *simulation_state, t_philo_const *philo_const);
+bool	set_philo_const(char *argv[], t_philo_const *philo_const);
 
 #endif

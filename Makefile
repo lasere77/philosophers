@@ -6,7 +6,7 @@
 #    By: mcolin <mcolin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/11/20 21:59:30 by mcolin            #+#    #+#              #
-#    Updated: 2026/01/09 14:47:53 by mcolin           ###   ########.fr        #
+#    Updated: 2026/02/23 13:58:46 by mcolin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,6 +15,8 @@ NAME = philo
 SRCS_DIR = srcs/
 SOURCES =	$(SRCS_DIR)main.c					\
 			$(SRCS_DIR)philo.c					\
+			$(SRCS_DIR)philo_routines.c			\
+			$(SRCS_DIR)utils/routines_utils.c	\
 			$(SRCS_DIR)utils/parsing_utils.c	\
 			$(SRCS_DIR)utils/utils.c			\
 
@@ -32,8 +34,7 @@ $(NAME): $(OBJS)
 	$(CC) $(OBJS) $(CFLAGS) $(INCLUDE) -o $(NAME)
 
 $(OBJ_DIR)%.o: $(SRCS_DIR)%.c
-	@mkdir -p .build/
-	@mkdir -p .build/utils
+	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(INCLUDE) $< -c -o $@
 
 gdb: $(NAME)

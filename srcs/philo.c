@@ -6,7 +6,7 @@
 /*   By: mcolin <mcolin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 14:09:22 by mcolin            #+#    #+#             */
-/*   Updated: 2026/01/09 15:01:16 by mcolin           ###   ########.fr       */
+/*   Updated: 2026/02/23 14:52:48 by mcolin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,38 +14,30 @@
 #include "parsing_utils.h"
 #include "utils.h"
 
+#include <stdbool.h>
+#include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #define MSG_ERROR_PARSING "error parsing: \
-check if all variables have a positive value.\n"
+check if all variables have a positive value. \
+And they does not overflow\n"
 
-t_philo_const	*set_philo_const(char *argv[])
+bool	set_philo_const(char *argv[], t_philo_const *philo_const)
 {
-	t_philo_const	*philo_const;
-
 	if (have_digit(argv) || have_neg_value(argv))
 	{
 		printf(MSG_ERROR_PARSING);
-		return (NULL);
+		return (1);
 	}
-	philo_const = malloc(sizeof(t_philo_const));
-	if (!philo_const)
-		return (NULL);
-	philo_const->nb_philo = ft_abs(ft_atoi(argv[1]));
-	philo_const->time_to_die = ft_abs(ft_atoi(argv[2]));
-	philo_const->time_to_eat = ft_abs(ft_atoi(argv[3]));
-	philo_const->time_to_sleep = ft_abs(ft_atoi(argv[4]));
-	philo_const->nb_times_philosopher_must_eat = 0;
+	philo_const->nb_philo = ft_atoi(argv[1], NULL);
+	philo_const->time_to_die = ft_atoi(argv[2], NULL);
+	philo_const->time_to_eat = ft_atoi(argv[3], NULL);
+	philo_const->time_to_sleep = ft_atoi(argv[4], NULL);
+	philo_const->nb_times_philosopher_must_eat = -1;
 	if (argv[5])
-	{
-		philo_const->nb_times_philosopher_must_eat = ft_abs(ft_atoi(argv[5]));
-		if (philo_const->nb_times_philosopher_must_eat == 0)
-		{
-			free(philo_const);
-			return (NULL);
-		}
-	}
-	return (philo_const);
+		philo_const->nb_times_philosopher_must_eat = ft_atoi(argv[5], NULL);
+	return (0);
 }
 
 static void	set_forks(t_philo *philos)
@@ -53,24 +45,29 @@ static void	set_forks(t_philo *philos)
 	size_t	i;
 
 	i = 0;
-	while (i < philos[0].philo_const->nb_philo)
+	while (i < (size_t)philos[0].philo_const->nb_philo)
 	{
-		philos[i].right_fork = &philos[(i + 1)
-			% philos[0].philo_const->nb_philo].left_fork;
-		philos[i].left_fork.available = 1;
+		philos[i].right_fork = &philos[
+			(i + 1) % philos[0].philo_const->nb_philo
+		].left_fork;
+		if (philos[i].right_fork)
+			philos[i].right_fork->available = true;
+		philos[i].left_fork.available = true;
+		pthread_mutex_init(&philos[i].left_fork.lock, NULL);
 		i++;
 	}
 }
 
-t_philo	*set_philos(char **argv)
+t_philo	*set_philos(t_simulation *simulation_state, t_philo_const *philo_const)
 {
-	t_philo_const	*philo_const;
-	t_philo			*philos;
-	size_t			i;
+	t_philo	*philos;
+	size_t	i;
 
-	philo_const = set_philo_const(argv);
-	if (!philo_const)
-		return (NULL);
+	simulation_state->state_simulation = true;
+	simulation_state->nb_philo_must_eat = 0;
+	gettimeofday(&simulation_state->start, NULL);
+	pthread_mutex_init(&simulation_state->lock, NULL);
+	pthread_mutex_init(&simulation_state->lock_stdout, NULL);
 	philos = ft_calloc(philo_const->nb_philo, sizeof(t_philo));
 	if (!philos)
 	{
@@ -78,17 +75,12 @@ t_philo	*set_philos(char **argv)
 		return (NULL);
 	}
 	i = 0;
-	while (i < philo_const->nb_philo)
+	while (i < (size_t)philo_const->nb_philo)
 	{
 		philos[i].philo_const = philo_const;
+		philos[i].simulation_state = simulation_state;
 		i++;
 	}
 	set_forks(philos);
 	return (philos);
-}
-
-void	free_philos(t_philo *philos)
-{
-	free(philos[0].philo_const);
-	free(philos);
 }

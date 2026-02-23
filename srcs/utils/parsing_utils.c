@@ -6,12 +6,15 @@
 /*   By: mcolin <mcolin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 14:43:29 by mcolin            #+#    #+#             */
-/*   Updated: 2026/01/09 15:01:03 by mcolin           ###   ########.fr       */
+/*   Updated: 2026/02/23 09:53:32 by mcolin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing_utils.h"
 #include "utils.h"
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdlib.h>
 
 bool	have_digit(char *argv[])
 {
@@ -40,11 +43,13 @@ bool	have_digit(char *argv[])
 bool	have_neg_value(char *argv[])
 {
 	size_t	i;
+	bool	have_overflow;
 
+	have_overflow = false;
 	i = 1;
 	while (argv[i])
 	{
-		if (ft_atoi(argv[i]) <= 0)
+		if (ft_atoi(argv[i], &have_overflow) < 0 || have_overflow)
 			return (1);
 		i++;
 	}

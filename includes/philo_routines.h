@@ -1,25 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.h                                            :+:      :+:    :+:   */
+/*   philo_routines.h                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mcolin <mcolin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/07 15:56:06 by mcolin            #+#    #+#             */
-/*   Updated: 2026/02/23 13:50:38 by mcolin           ###   ########.fr       */
+/*   Created: 2026/01/09 16:04:28 by mcolin            #+#    #+#             */
+/*   Updated: 2026/02/23 14:37:18 by mcolin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef UTILS_H
-# define UTILS_H
+#ifndef PHILO_ROUTINES_H
+# define PHILO_ROUTINES_H
 
-# include <stdlib.h>
-# include <stdbool.h>
-
-char	ft_isdigit(char c);
-char	ft_issign(char c);
-int		ft_atoi(const char *nptr, bool *have_overflow);
-void	*ft_calloc(size_t nmemb, size_t size);
-size_t	get_time_stamps(struct timeval start);
+void	*main_routine(void *philo);
 
 #endif
