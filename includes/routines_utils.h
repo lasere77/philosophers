@@ -6,7 +6,7 @@
 /*   By: mcolin <mcolin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 13:38:18 by mcolin            #+#    #+#             */
-/*   Updated: 2026/02/23 14:37:38 by mcolin           ###   ########.fr       */
+/*   Updated: 2026/02/24 10:45:46 by mcolin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,5 @@ bool	get_simulation_state(t_philo *philo);
 void	update_simulation(t_philo *philo);
 void	sleep_val(t_philo *philo, size_t duration);
 void	end_simulation(t_philo *philo);
-bool	fall_asleep(t_philo *philo, size_t time);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: mcolin <mcolin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 16:00:29 by mcolin            #+#    #+#             */
-/*   Updated: 2026/02/23 15:28:10 by mcolin           ###   ########.fr       */
+/*   Updated: 2026/02/24 12:53:29 by mcolin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static bool	take_fork(t_philo *philo, t_fork *fork)
 		if (fork->available == true)
 		{
 			pthread_mutex_lock(&philo->simulation_state->lock_stdout);
-			printf("%s %lu %lu has taken a fork\n", COLOR_LIGHT_CYAN,
+			printf("%s%lu %lu has taken a fork\n", COLOR_LIGHT_CYAN,
 				get_time_stamps(philo->simulation_state->start),
 				philo->fake_thread_id);
 			pthread_mutex_unlock(&philo->simulation_state->lock_stdout);
@@ -49,7 +49,7 @@ static bool	eat_routine(t_philo	*philo)
 	if (!get_simulation_state(philo))
 		return (1);
 	pthread_mutex_lock(&philo->simulation_state->lock_stdout);
-	printf("%s %lu %lu is eating\n", COLOR_PURPLE,
+	printf("%s%lu %lu is eating\n", COLOR_PURPLE,
 		get_time_stamps(philo->simulation_state->start), philo->fake_thread_id);
 	pthread_mutex_unlock(&philo->simulation_state->lock_stdout);
 	philo->nb_eat++;
@@ -69,17 +69,18 @@ static bool	sleep_routine(t_philo *philo)
 	if (!get_simulation_state(philo))
 		return (1);
 	pthread_mutex_lock(&philo->simulation_state->lock_stdout);
-	printf("%s %lu %lu is sleeping\n", COLOR_BROWN,
+	printf("%s%lu %lu is sleeping\n", COLOR_BROWN,
 		get_time_stamps(philo->simulation_state->start), philo->fake_thread_id);
 	pthread_mutex_unlock(&philo->simulation_state->lock_stdout);
-	return (fall_asleep(philo, philo->philo_const->time_to_sleep
-			* MILLISECOND_IN_MICROSECOND));
+	sleep_val(philo, philo->philo_const->time_to_sleep);
+	return ((get_time_stamps(philo->simulation_state->start)
+			- philo->time_before_dying) >= philo->philo_const->time_to_die);
 }
 
 static inline void	thinking_routine(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->simulation_state->lock_stdout);
-	printf("%s %lu %lu is thinking\n", COLOR_LIGHT_GREEN,
+	printf("%s%lu %lu is thinking\n", COLOR_LIGHT_GREEN,
 		get_time_stamps(philo->simulation_state->start), philo->fake_thread_id);
 	pthread_mutex_unlock(&philo->simulation_state->lock_stdout);
 }

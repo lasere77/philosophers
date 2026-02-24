@@ -6,7 +6,7 @@
 /*   By: mcolin <mcolin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 13:37:57 by mcolin            #+#    #+#             */
-/*   Updated: 2026/02/23 15:38:46 by mcolin           ###   ########.fr       */
+/*   Updated: 2026/02/24 10:26:53 by mcolin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 bool	get_simulation_state(t_philo *philo)
 {
-	bool	result;
+	register bool	result;
 
 	pthread_mutex_lock(&philo->simulation_state->lock);
 	result = philo->simulation_state->state_simulation;
@@ -31,7 +31,7 @@ void	sleep_val(t_philo *philo, size_t duration)
 	start_smart_sleep = get_time_stamps(philo->simulation_state->start);
 	while (get_time_stamps(philo->simulation_state->start)
 		- start_smart_sleep < duration && get_simulation_state(philo))
-		usleep(500);
+		usleep(50);
 }
 
 void	update_simulation(t_philo *philo)
@@ -40,28 +40,6 @@ void	update_simulation(t_philo *philo)
 	if (philo->nb_eat == philo->philo_const->nb_times_philosopher_must_eat)
 		philo->simulation_state->nb_philo_must_eat++;
 	pthread_mutex_unlock(&philo->simulation_state->lock);
-}
-
-bool	fall_asleep(t_philo *philo, size_t time)
-{
-	const long	time_nap = time / 10;
-	size_t		t;
-
-	t = get_time_stamps(philo->simulation_state->start)
-		- philo->time_before_dying;
-	while (time - time_nap > 0)
-	{
-		if (t > philo->philo_const->time_to_die * MILLISECOND_IN_MICROSECOND)
-			return (1);
-		time -= time_nap;
-		t += time_nap;
-		usleep(time_nap);
-	}
-	if (t + time_nap >= philo->philo_const->time_to_die
-		* MILLISECOND_IN_MICROSECOND)
-		return (1);
-	usleep(time);
-	return (0);
 }
 
 void	end_simulation(t_philo *philo)
@@ -74,7 +52,7 @@ void	end_simulation(t_philo *philo)
 	if ((get_time_stamps(philo->simulation_state->start)
 			- philo->time_before_dying) >= philo->philo_const->time_to_die)
 	{
-		printf("%s %lu %lu died\n", COLOR_RED,
+		printf("%s%lu %lu died\n", COLOR_RED,
 			get_time_stamps(philo->simulation_state->start),
 			philo->fake_thread_id);
 	}
