@@ -6,7 +6,7 @@
 /*   By: mcolin <mcolin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/07 11:37:36 by mcolin            #+#    #+#             */
-/*   Updated: 2026/02/23 17:56:50 by mcolin           ###   ########.fr       */
+/*   Updated: 2026/02/24 13:14:38 by mcolin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static void	create_threads(t_philo *philos)
 		philos[i].fake_thread_id = i + 1;
 		pthread_create(&pthread, NULL, &main_routine, &philos[i]);
 		philos[i].thread_id = pthread;
-		usleep(500);
+		usleep(50);
 		i++;
 	}
 	i = 0;

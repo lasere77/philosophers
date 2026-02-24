@@ -6,7 +6,7 @@
 /*   By: mcolin <mcolin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 13:37:57 by mcolin            #+#    #+#             */
-/*   Updated: 2026/02/24 10:26:53 by mcolin           ###   ########.fr       */
+/*   Updated: 2026/02/24 13:36:55 by mcolin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,17 @@ bool	get_simulation_state(t_philo *philo)
 void	sleep_val(t_philo *philo, size_t duration)
 {
 	long	start_smart_sleep;
+	size_t	t;
 
 	start_smart_sleep = get_time_stamps(philo->simulation_state->start);
-	while (get_time_stamps(philo->simulation_state->start)
-		- start_smart_sleep < duration && get_simulation_state(philo))
+	t = start_smart_sleep;
+	while (t - start_smart_sleep < duration
+		&& (t - philo->time_before_dying) < philo->philo_const->time_to_die
+		&& get_simulation_state(philo))
+	{
 		usleep(50);
+		t = get_time_stamps(philo->simulation_state->start);
+	}
 }
 
 void	update_simulation(t_philo *philo)
