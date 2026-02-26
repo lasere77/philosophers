@@ -6,7 +6,7 @@
 /*   By: mcolin <mcolin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 14:09:22 by mcolin            #+#    #+#             */
-/*   Updated: 2026/02/23 18:09:48 by mcolin           ###   ########.fr       */
+/*   Updated: 2026/02/26 16:13:52 by mcolin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,10 +65,7 @@ t_philo	*set_philos(t_simulation *simulation_state, t_philo_const *philo_const)
 
 	philos = ft_calloc(philo_const->nb_philo, sizeof(t_philo));
 	if (!philos)
-	{
-		free(philo_const);
 		return (NULL);
-	}
 	simulation_state->state_simulation = true;
 	simulation_state->nb_philo_must_eat = 0;
 	gettimeofday(&simulation_state->start, NULL);
